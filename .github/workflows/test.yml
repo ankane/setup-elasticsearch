@@ -16,5 +16,5 @@ jobs:
     - uses: ankane/setup-elasticsearch@v1
       with:
         elasticsearch-version: ${{ matrix.elasticsearch-version }}
-    - run: |
-        curl -s localhost:9200
+    - run: curl -s localhost:9200
+    - run: sudo $ES_HOME/bin/elasticsearch-plugin install analysis-kuromoji

@@ -46,6 +46,15 @@ jobs:
         elasticsearch-version: ${{ matrix.elasticsearch-version }}
 ```
 
+Install plugins
+
+```yml
+jobs:
+  build:
+    steps:
+    - run: sudo $ES_HOME/bin/elasticsearch-plugin install analysis-kuromoji
+```
+
 ## Related Actions
 
 - [setup-postgres](https://github.com/ankane/setup-postgres)
