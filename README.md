@@ -15,18 +15,12 @@ Supports:
 Add it as a step to your workflow
 
 ```yml
-jobs:
-  build:
-    steps:
     - uses: ankane/setup-elasticsearch@v1
 ```
 
 Specify a version (defaults to the latest if no version is specified)
 
 ```yml
-jobs:
-  build:
-    steps:
     - uses: ankane/setup-elasticsearch@v1
       with:
         elasticsearch-version: 7
@@ -35,8 +29,6 @@ jobs:
 Test against multiple versions
 
 ```yml
-jobs:
-  build:
     strategy:
       matrix:
         elasticsearch-version: [7, 6]
@@ -49,9 +41,6 @@ jobs:
 Install plugins
 
 ```yml
-jobs:
-  build:
-    steps:
     - run: sudo $ES_HOME/bin/elasticsearch-plugin install analysis-kuromoji
 ```
 
