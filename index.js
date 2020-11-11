@@ -21,7 +21,7 @@ if (process.platform == 'darwin') {
 } else {
   run(`wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -`);
   // TODO use elasticsearchVersion
-  run(`echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-7.x.list`);
+  run(`echo "deb https://artifacts.elastic.co/packages/${elasticsearchVersion}.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-${elasticsearchVersion}.x.list`);
   run(`sudo apt-get update`);
   run(`sudo apt-get install elasticsearch`);
   run(`sudo systemctl start elasticsearch`);
