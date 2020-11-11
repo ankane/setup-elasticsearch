@@ -25,8 +25,8 @@ if (process.platform == 'darwin') {
     run(`sudo apt-get update`);
     run(`sudo apt-get install elasticsearch`);
   } else {
-    run(`wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${elasticsearchVersion}-amd64.deb`);
-    run(`sudo apt install elasticsearch-${elasticsearchVersion}-amd64.deb`);
+    run(`wget -q https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${elasticsearchVersion}-amd64.deb`);
+    run(`sudo apt install ./elasticsearch-${elasticsearchVersion}-amd64.deb`);
   }
   run(`sudo systemctl start elasticsearch`);
 }
