@@ -1,6 +1,6 @@
 # setup-elasticsearch
 
-The missing action for Elasticsearch - no need to use containers :tada:
+The missing action for Elasticsearch - no need for containers :tada:
 
 Supports:
 
