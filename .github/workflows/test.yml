@@ -18,3 +18,5 @@ jobs:
         elasticsearch-version: ${{ matrix.elasticsearch-version }}
     - run: curl -s localhost:9200
     - run: sudo $ES_HOME/bin/elasticsearch-plugin install analysis-kuromoji
+      # ERROR: attempted to install release build of official plugin on snapshot build of Elasticsearch
+      if: ${{ matrix.os != 'macos-10.15' || matrix.elasticsearch-version != 7 }}
