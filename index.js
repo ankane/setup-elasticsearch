@@ -7,7 +7,7 @@ function run(command) {
 
 const elasticsearchVersion = process.env['INPUT_ELASTICSEARCH-VERSION'] || '7';
 
-if (!['7', '6', '7.8.0'].includes(elasticsearchVersion)) {
+if (!/^[67](\.\d{1,2}){0,2}$/.test(elasticsearchVersion)) {
   throw `Elasticsearch version not supported: ${elasticsearchVersion}`;
 }
 
