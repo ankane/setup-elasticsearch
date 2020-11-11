@@ -38,6 +38,8 @@ Test against multiple versions
         elasticsearch-version: ${{ matrix.elasticsearch-version }}
 ```
 
+## Extra Steps
+
 Install plugins
 
 ```yml
