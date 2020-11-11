@@ -5,7 +5,8 @@ The missing action for Elasticsearch - no need to use containers :tada:
 Supports:
 
 - Linux and Mac (`ubuntu-20.04`, `ubuntu-18.04`, `ubuntu-16.04`, and `macos-10.15`)
-- Different versions (`7` and `6`)
+- Major versions on all platforms (`7` and `6`)
+- Full versions on Linux (`7.9.3`, `6.8.13`, etc)
 
 [![Build Status](https://github.com/ankane/setup-elasticsearch/workflows/build/badge.svg?branch=v1)](https://github.com/ankane/setup-elasticsearch/actions)
 
