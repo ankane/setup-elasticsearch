@@ -2,7 +2,7 @@
 
 The missing action for Elasticsearch :tada:
 
-- Faster and simpler than containers
+- Simpler than containers
 - Works on Linux and Mac
 - Supports different versions
 
