@@ -28,8 +28,8 @@ Specify a version (defaults to the latest)
 
 Currently supports
 
-- Major versions (`7` and `6`)
-- Full versions (`7.9.3`, `6.8.13`, etc) - *Linux only*
+- Major versions - `7` and `6`
+- Full versions - `7.9.3`, `6.8.13`, etc (Linux only)
 
 Test against multiple versions
 
