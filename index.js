@@ -69,7 +69,7 @@ function download() {
 
 // TODO install all plugins with single command in Elasticsearch 7.10+
 function installPlugins() {
-  const plugins = (process.env['INPUT_PLUGINS'] || '').split(/\s*[,\n]\s*/);
+  const plugins = (process.env['INPUT_PLUGINS'] || '').trim().split(/\s*[,\n]\s*/);
   if (plugins.length > 0) {
     console.log('Installing plugins');
 
