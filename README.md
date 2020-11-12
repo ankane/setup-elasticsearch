@@ -43,12 +43,14 @@ Test against multiple versions
         elasticsearch-version: ${{ matrix.elasticsearch-version }}
 ```
 
-## Extra Steps
+## Plugins
 
 Install plugins
 
 ```yml
-    - run: sudo $ES_HOME/bin/elasticsearch-plugin install analysis-kuromoji
+    - uses: ankane/setup-elasticsearch@v1
+      with:
+        plugins: analysis-kuromoji,analysis-smartcn
 ```
 
 ## Related Actions
