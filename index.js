@@ -5,6 +5,10 @@ function run(command) {
   execSync(command, {stdio: 'inherit'});
 }
 
+function installPlugins() {
+  console.log(process.env['INPUT_PLUGINS']);
+}
+
 const elasticsearchVersion = process.env['INPUT_ELASTICSEARCH-VERSION'] || '7';
 
 if (!/^[67](\.\d{1,2}){0,2}$/.test(elasticsearchVersion)) {
@@ -18,6 +22,8 @@ if (process.platform == 'darwin') {
 
   // install (OSS version for now)
   run(`brew install elasticsearch@${elasticsearchVersion}`);
+
+  installPlugins();
 
   // start
   run(`${esHome}/bin/elasticsearch -d`);
@@ -40,6 +46,8 @@ if (process.platform == 'darwin') {
     run(`wget -q -O elasticsearch.deb ${url}`);
     run(`sudo apt install ./elasticsearch.deb`);
   }
+
+  installPlugins();
 
   // start
   run(`sudo systemctl start elasticsearch`);

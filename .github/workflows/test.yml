@@ -14,11 +14,12 @@ jobs:
             elasticsearch-version: '7.10.0'
           - os: macos-10.15
             elasticsearch-version: '6.8.13'
+          # ERROR: attempted to install release build of official plugin on snapshot build of Elasticsearch
+          - os: macos-10.15
+            elasticsearch-version: '7'
     steps:
     - uses: ankane/setup-elasticsearch@v1
       with:
         elasticsearch-version: ${{ matrix.elasticsearch-version }}
+        plugins: [analysis-kuromoji]
     - run: curl -s localhost:9200
-    - run: sudo $ES_HOME/bin/elasticsearch-plugin install analysis-kuromoji
-      # ERROR: attempted to install release build of official plugin on snapshot build of Elasticsearch
-      if: ${{ matrix.os != 'macos-10.15' || matrix.elasticsearch-version != 7 }}
