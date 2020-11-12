@@ -8,7 +8,12 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-20.04, ubuntu-18.04, ubuntu-16.04, macos-10.15, windows-2019]
-        elasticsearch-version: [7, 6, '7.9', '7.9.3', '6.8.13']
+        elasticsearch-version: [7, 6]
+        include:
+          - os: ubuntu-18.04
+            elasticsearch-version: 7.9
+          - os: ubuntu-18.04
+            elasticsearch-version: 7.9.3
     steps:
     - uses: ankane/setup-elasticsearch@v1
       with:
