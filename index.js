@@ -1,66 +1,124 @@
 const execSync = require('child_process').execSync;
+const homeDir = require('os').homedir();
+const fs = require('fs');
+const path = require('path');
 
 function run(command) {
   console.log(command);
   execSync(command, {stdio: 'inherit'});
 }
 
-let esHome;
-
-function installPlugins() {
-  const plugins = (process.env['INPUT_PLUGINS'] || '').split(/\s*,\s*/);
-  plugins.forEach( function(plugin) {
-    if (!/^[a-zA-Z0-9-]+$/.test(plugin)) {
-      throw `Invalid plugin: ${plugin}`;
-    }
-    run(`sudo ${esHome}/bin/elasticsearch-plugin install ${plugin}`);
-  });
-}
-
-const elasticsearchVersion = process.env['INPUT_ELASTICSEARCH-VERSION'] || '7';
-
-if (!/^[67](\.\d{1,2}){0,2}$/.test(elasticsearchVersion)) {
-  throw `Elasticsearch version not supported: ${elasticsearchVersion}`;
-}
-
-if (process.platform == 'darwin') {
-  esHome = `/usr/local/opt/elasticsearch@${elasticsearchVersion}`;
-
-  // install (OSS version for now)
-  run(`brew install elasticsearch@${elasticsearchVersion}`);
-
-  installPlugins();
-
-  // start
-  run(`${esHome}/bin/elasticsearch -d`);
-} else {
-  esHome = '/usr/share/elasticsearch';
-
-  // install
-  if (elasticsearchVersion.length == 1) {
-    run(`wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -`);
-    run(`echo "deb https://artifacts.elastic.co/packages/${elasticsearchVersion}.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-${elasticsearchVersion}.x.list`);
-    run(`sudo apt-get update`);
-    run(`sudo apt-get install elasticsearch`);
-  } else {
-    let url;
-    if (elasticsearchVersion[0] == '6') {
-      url = `https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${elasticsearchVersion}.deb`;
-    } else {
-      url = `https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${elasticsearchVersion}-amd64.deb`;
-    }
-    run(`wget -q -O elasticsearch.deb ${url}`);
-    run(`sudo apt install ./elasticsearch.deb`);
+function getVersion() {
+  let version = process.env['INPUT_ELASTICSEARCH-VERSION'] || '7';
+  if (version == '7') {
+    version = '7.10.0';
+  } else if (version == '6') {
+    version = '6.8.13';
   }
 
-  installPlugins();
+  if (!/^[67]\.\d{1,2}\.\d{1,2}$/.test(version)) {
+    throw `Elasticsearch version not supported: ${version}`;
+  }
 
-  // start
-  run(`sudo systemctl start elasticsearch`);
+  return version;
 }
 
-// wait
-run(`for i in \`seq 1 30\`; do curl -s localhost:9200 && break; sleep 1; done`);
+function isWindows() {
+  return process.platform == 'win32';
+}
+
+// no JDK version is ideal, but deprecated
+function getUrl() {
+  let url;
+  if (process.platform == 'darwin') {
+    if (elasticsearchVersion[0] == '6') {
+      url = `https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${elasticsearchVersion}.tar.gz`;
+    } else {
+      url = `https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${elasticsearchVersion}-darwin-x86_64.tar.gz`;
+    }
+  } else if (isWindows()) {
+    if (elasticsearchVersion[0] == '6') {
+      url = `https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${elasticsearchVersion}.zip`;
+    } else {
+      url = `https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${elasticsearchVersion}-windows-x86_64.zip`;
+    }
+  } else {
+    if (elasticsearchVersion[0] == '6') {
+      url = `https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${elasticsearchVersion}.tar.gz`;
+    } else {
+      url = `https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${elasticsearchVersion}-linux-x86_64.tar.gz`;
+    }
+  }
+  return url;
+}
+
+function download() {
+  const url = getUrl();
+  if (isWindows()) {
+    run(`curl -s -o elasticsearch.zip ${url}`);
+    run(`unzip -q elasticsearch.zip`);
+  } else {
+    run(`wget -q -O elasticsearch.tar.gz ${url}`);
+    run(`tar xfz elasticsearch.tar.gz`);
+  }
+  if (!fs.existsSync(cacheDir)) {
+    fs.mkdirSync(cacheDir, {recursive: true});
+  }
+  run(`mv elasticsearch-${elasticsearchVersion} ${esHome}`);
+}
+
+// TODO install all plugins with single command in Elasticsearch 7.10+
+function installPlugins() {
+  const plugins = (process.env['INPUT_PLUGINS'] || '').split(/\s*[,\n]\s*/);
+  if (plugins.length > 0) {
+    console.log('Installing plugins');
+
+    const pluginCmd = path.join(esHome, 'bin', 'elasticsearch-plugin');
+    plugins.forEach( function(plugin) {
+      if (!/^[a-zA-Z0-9-]+$/.test(plugin)) {
+        throw `Invalid plugin: ${plugin}`;
+      }
+      run(`${pluginCmd} install --silent ${plugin}`);
+    });
+  }
+}
+
+function startServer() {
+  if (isWindows()) {
+    const serviceCmd = path.join(esHome, 'bin', 'elasticsearch-service');
+    run(`${serviceCmd} install`);
+    run(`${serviceCmd} start`);
+  } else {
+    run(`${path.join(esHome, 'bin', 'elasticsearch')} -d`);
+  }
+}
+
+function waitForReady() {
+  console.log("Waiting for server to be ready");
+  for (let i = 0; i < 30; i++) {
+    try {
+      execSync(`curl -s localhost:9200`);
+      break;
+    } catch {
+      execSync(`sleep 1`);
+    }
+  }
+}
+
+const elasticsearchVersion = getVersion();
+const cacheDir = path.join(homeDir, 'elasticsearch');
+const esHome = path.join(cacheDir, elasticsearchVersion);
+
+if (!fs.existsSync(esHome)) {
+  download();
+  installPlugins();
+} else {
+  console.log('Elasticsearch cached');
+}
+
+startServer();
+
+waitForReady();
 
 // set ES_HOME
-run(`echo "ES_HOME=${esHome}" >> $GITHUB_ENV`);
+fs.appendFileSync(process.env.GITHUB_ENV, `ES_HOME=${esHome}`);

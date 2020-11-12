@@ -3,7 +3,7 @@
 The missing action for Elasticsearch :tada:
 
 - Simpler than containers
-- Works on Linux and Mac
+- Works on Linux, Mac, and Windows
 - Supports different versions
 
 [![Build Status](https://github.com/ankane/setup-elasticsearch/workflows/build/badge.svg?branch=v1)](https://github.com/ankane/setup-elasticsearch/actions)
@@ -29,7 +29,7 @@ Specify a version (defaults to the latest)
 Currently supports
 
 - Major versions - `7` and `6`
-- Full versions - `7.9.3`, `6.8.13`, etc (Linux only)
+- Full versions - `7.9.3`, `6.8.13`, etc
 
 Test against multiple versions
 
@@ -50,7 +50,9 @@ Install plugins
 ```yml
     - uses: ankane/setup-elasticsearch@v1
       with:
-        plugins: analysis-kuromoji,analysis-smartcn
+        plugins: |
+          analysis-kuromoji
+          analysis-smartcn
 ```
 
 ## Related Actions
