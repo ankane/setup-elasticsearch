@@ -31,7 +31,13 @@ if (process.platform == 'darwin') {
     run(`sudo apt-get update`);
     run(`sudo apt-get install elasticsearch`);
   } else {
-    run(`wget -q https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${elasticsearchVersion}-amd64.deb`);
+    let url;
+    if (elasticsearchVersion[0] == '6') {
+      url = `https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${elasticsearchVersion}.deb`;
+    } else {
+      url = `https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${elasticsearchVersion}-amd64.deb`;
+    }
+    run(`wget -q ${url}`);
     run(`sudo apt install ./elasticsearch-${elasticsearchVersion}-amd64.deb`);
   }
 
