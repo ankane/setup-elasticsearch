@@ -39,6 +39,14 @@ function run() {
   }
 }
 
+function addToEnv(value) {
+  fs.appendFileSync(process.env.GITHUB_ENV, `${value}\n`);
+}
+
+function addToPath(value) {
+  fs.appendFileSync(process.env.GITHUB_PATH, `${value}\n`);
+}
+
 function getVersion() {
   let version = process.env['INPUT_ELASTICSEARCH-VERSION'] || '7';
   if (versionMap[version]) {
@@ -87,9 +95,6 @@ function download() {
   } else {
     run('wget', '-q', '-O', 'elasticsearch.tar.gz', url);
     run('tar', 'xfz', 'elasticsearch.tar.gz');
-  }
-  if (!fs.existsSync(cacheDir)) {
-    fs.mkdirSync(cacheDir, {recursive: true});
   }
   if (isWindows()) {
     // fix for: cross-device link not permitted
@@ -151,8 +156,7 @@ function waitForReady() {
 }
 
 const elasticsearchVersion = getVersion();
-const cacheDir = path.join(homeDir, 'elasticsearch');
-const esHome = path.join(cacheDir, elasticsearchVersion);
+const esHome = path.join(homeDir, 'elasticsearch');
 
 if (!fs.existsSync(esHome)) {
   download();
@@ -165,5 +169,5 @@ startServer();
 
 waitForReady();
 
-// set ES_HOME
-fs.appendFileSync(process.env.GITHUB_ENV, `ES_HOME=${esHome}\n`);
+addToEnv(`ES_HOME=${esHome}`);
+addToPath(path.join(esHome, 'bin'));

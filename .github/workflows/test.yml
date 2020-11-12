@@ -22,3 +22,4 @@ jobs:
           analysis-kuromoji
           analysis-smartcn
     - run: curl -s localhost:9200
+    - run: which elasticsearch
