@@ -9,12 +9,12 @@ let esHome;
 
 function installPlugins() {
   const plugins = (process.env['INPUT_PLUGINS'] || '').split(/\s*,\s*/);
-  for (let plugin in plugins) {
+  plugins.forEach( function(plugin) {
     if (!/^[a-zA-Z0-9-]+$/.test(plugin)) {
       throw `Invalid plugin: ${plugin}`;
     }
     run(`sudo ${esHome}/bin/elasticsearch-plugin install ${plugin}`);
-  }
+  });
 }
 
 const elasticsearchVersion = process.env['INPUT_ELASTICSEARCH-VERSION'] || '7';
