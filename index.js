@@ -103,7 +103,7 @@ function installPlugins() {
     // install multiple plugins at once with Elasticsearch 7.6+
     // https://www.elastic.co/guide/en/elasticsearch/plugins/7.6/installing-multiple-plugins.html
     const versionParts = elasticsearchVersion.split('.');
-    const atOnce = versionParts[0] == '7' && parseInt(versionParts[1]) >= 6;
+    const atOnce = parseInt(versionParts[0]) >= 7 && parseInt(versionParts[1]) >= 6;
     const pluginCmd = path.join(esHome, 'bin', 'elasticsearch-plugin');
     if (atOnce) {
       run(`${pluginCmd} install --silent ${plugins.join(' ')}`);
