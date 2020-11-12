@@ -166,4 +166,4 @@ startServer();
 waitForReady();
 
 // set ES_HOME
-fs.appendFileSync(process.env.GITHUB_ENV, `ES_HOME=${esHome}`);
+fs.appendFileSync(process.env.GITHUB_ENV, `ES_HOME=${esHome}\n`);
