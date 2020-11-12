@@ -3,7 +3,6 @@ const homeDir = require('os').homedir();
 const fs = require('fs');
 const path = require('path');
 
-// TODO add more minor versions
 const versionMap = {
   '7': '7.10.0',
   '6': '6.8.13',
