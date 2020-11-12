@@ -114,7 +114,10 @@ function installPlugins() {
     // https://www.elastic.co/guide/en/elasticsearch/plugins/7.6/installing-multiple-plugins.html
     const versionParts = elasticsearchVersion.split('.');
     const atOnce = parseInt(versionParts[0]) >= 7 && parseInt(versionParts[1]) >= 6;
-    const pluginCmd = path.join(esHome, 'bin', 'elasticsearch-plugin');
+    let pluginCmd = path.join(esHome, 'bin', 'elasticsearch-plugin');
+    if (isWindows()) {
+      pluginCmd += '.bat';
+    }
     if (atOnce) {
       run(pluginCmd, 'install', '--silent', ...plugins);
     } else {
