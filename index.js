@@ -91,7 +91,7 @@ function download() {
     fs.mkdirSync(cacheDir, {recursive: true});
   }
   if (isWindows()) {
-    // cross-device link not permitted
+    // fix for: cross-device link not permitted
     run('mv', `elasticsearch-${elasticsearchVersion}`, esHome)
   } else {
     fs.renameSync(`elasticsearch-${elasticsearchVersion}`, esHome);
