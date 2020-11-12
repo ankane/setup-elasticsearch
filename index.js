@@ -88,19 +88,30 @@ function download() {
   run(`mv elasticsearch-${elasticsearchVersion} ${esHome}`);
 }
 
-// TODO install all plugins with single command in Elasticsearch 7.10+
 function installPlugins() {
   const plugins = (process.env['INPUT_PLUGINS'] || '').trim().split(/\s*[,\n]\s*/);
   if (plugins.length > 0) {
     console.log('Installing plugins');
 
-    const pluginCmd = path.join(esHome, 'bin', 'elasticsearch-plugin');
+    // validate
     plugins.forEach( function(plugin) {
       if (!/^[a-zA-Z0-9-]+$/.test(plugin)) {
         throw `Invalid plugin: ${plugin}`;
       }
-      run(`${pluginCmd} install --silent ${plugin}`);
     });
+
+    // install multiple plugins at once with Elasticsearch 7.6+
+    // https://www.elastic.co/guide/en/elasticsearch/plugins/7.6/installing-multiple-plugins.html
+    const versionParts = elasticsearchVersion.split('.');
+    const atOnce = versionParts[0] == '7' && parseInt(versionParts[1]) >= 6;
+    const pluginCmd = path.join(esHome, 'bin', 'elasticsearch-plugin');
+    if (atOnce) {
+      run(`${pluginCmd} install --silent ${plugins.join(' ')}`);
+    } else {
+      plugins.forEach( function(plugin) {
+        run(`${pluginCmd} install --silent ${plugin}`);
+      });
+    }
   }
 }
 
