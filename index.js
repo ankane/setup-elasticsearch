@@ -110,7 +110,7 @@ function startServer() {
     run(`${serviceCmd} install`);
     run(`${serviceCmd} start`);
   } else {
-    run(`${path.join(esHome, 'bin', 'elasticsearch')} -d`);
+    run(`${path.join(esHome, 'bin', 'elasticsearch')} -d -E discovery.type=single-node`);
   }
 }
 
