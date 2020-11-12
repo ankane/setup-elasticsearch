@@ -90,7 +90,12 @@ function download() {
   if (!fs.existsSync(cacheDir)) {
     fs.mkdirSync(cacheDir, {recursive: true});
   }
-  fs.renameSync(`elasticsearch-${elasticsearchVersion}`, esHome);
+  if (isWindows()) {
+    // cross-device link not permitted
+    run('mv', `elasticsearch-${elasticsearchVersion}`, esHome)
+  } else {
+    fs.renameSync(`elasticsearch-${elasticsearchVersion}`, esHome);
+  }
 }
 
 function installPlugins() {
