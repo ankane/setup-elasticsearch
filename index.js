@@ -130,7 +130,7 @@ function installPlugins() {
 
 function startServer() {
   if (isWindows()) {
-    const serviceCmd = path.join(esHome, 'bin', 'elasticsearch-service');
+    const serviceCmd = path.join(esHome, 'bin', 'elasticsearch-service.bat');
     run(serviceCmd, 'install');
     run(serviceCmd, 'start');
   } else {
