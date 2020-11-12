@@ -32,6 +32,7 @@ function run() {
   const args = Array.from(arguments);
   console.log(args.join(' '));
   const command = args.shift();
+  // spawn is safer and more lightweight than exec
   const ret = spawnSync(command, args, {stdio: 'inherit'});
   if (ret.status !== 0) {
     throw ret.error;
