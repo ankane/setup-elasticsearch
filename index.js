@@ -37,7 +37,7 @@ if (process.platform == 'darwin') {
     } else {
       url = `https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${elasticsearchVersion}-amd64.deb`;
     }
-    run(`wget -q -o elasticsearch.deb ${url}`);
+    run(`wget -q -O elasticsearch.deb ${url}`);
     run(`sudo apt install ./elasticsearch.deb`);
   }
 
