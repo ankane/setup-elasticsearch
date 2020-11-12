@@ -1,4 +1,4 @@
-const execSync = require('child_process').execSync;
+const spawnSync = require('child_process').spawnSync;
 const homeDir = require('os').homedir();
 const fs = require('fs');
 const path = require('path');
@@ -28,9 +28,14 @@ const versionMap = {
   '6.0': '6.0.1'
 };
 
-function run(command) {
-  console.log(command);
-  execSync(command, {stdio: 'inherit'});
+function run() {
+  const args = Array.from(arguments);
+  console.log(args.join(' '));
+  const command = args.shift();
+  const ret = spawnSync(command, args, {stdio: 'inherit'});
+  if (ret.status !== 0) {
+    throw ret.error;
+  }
 }
 
 function getVersion() {
@@ -76,16 +81,16 @@ function getUrl() {
 function download() {
   const url = getUrl();
   if (isWindows()) {
-    run(`curl -s -o elasticsearch.zip ${url}`);
-    run(`unzip -q elasticsearch.zip`);
+    run('curl', '-s', '-o', 'elasticsearch.zip', url);
+    run('unzip', '-q', 'elasticsearch.zip');
   } else {
-    run(`wget -q -O elasticsearch.tar.gz ${url}`);
-    run(`tar xfz elasticsearch.tar.gz`);
+    run('wget', '-q', '-O', 'elasticsearch.tar.gz', url);
+    run('tar', 'xfz', 'elasticsearch.tar.gz');
   }
   if (!fs.existsSync(cacheDir)) {
     fs.mkdirSync(cacheDir, {recursive: true});
   }
-  run(`mv elasticsearch-${elasticsearchVersion} ${esHome}`);
+  fs.renameSync(`elasticsearch-${elasticsearchVersion}`, esHome);
 }
 
 function installPlugins() {
@@ -106,10 +111,10 @@ function installPlugins() {
     const atOnce = parseInt(versionParts[0]) >= 7 && parseInt(versionParts[1]) >= 6;
     const pluginCmd = path.join(esHome, 'bin', 'elasticsearch-plugin');
     if (atOnce) {
-      run(`${pluginCmd} install --silent ${plugins.join(' ')}`);
+      run(pluginCmd, 'install', '--silent', ...plugins);
     } else {
       plugins.forEach( function(plugin) {
-        run(`${pluginCmd} install --silent ${plugin}`);
+        run(pluginCmd, 'install', '--silent', plugin);
       });
     }
   }
@@ -118,22 +123,21 @@ function installPlugins() {
 function startServer() {
   if (isWindows()) {
     const serviceCmd = path.join(esHome, 'bin', 'elasticsearch-service');
-    run(`${serviceCmd} install`);
-    run(`${serviceCmd} start`);
+    run(serviceCmd, 'install');
+    run(serviceCmd, 'start');
   } else {
-    run(`${path.join(esHome, 'bin', 'elasticsearch')} -d -E discovery.type=single-node`);
+    run(path.join(esHome, 'bin', 'elasticsearch'), '-d', '-E', 'discovery.type=single-node');
   }
 }
 
 function waitForReady() {
   console.log("Waiting for server to be ready");
   for (let i = 0; i < 30; i++) {
-    try {
-      execSync(`curl -s localhost:9200`);
+    let ret = spawnSync('curl', ['-s', 'localhost:9200']);
+    if (ret.status === 0) {
       break;
-    } catch {
-      execSync(`sleep 1`);
     }
+    spawnSync('sleep', ['1']);
   }
 }
 
