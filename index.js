@@ -3,6 +3,15 @@ const homeDir = require('os').homedir();
 const fs = require('fs');
 const path = require('path');
 
+// TODO add more minor versions
+const versionMap = {
+  '7': '7.10.0',
+  '6': '6.8.13',
+  '7.10': '7.10.0',
+  '7.9': '7.9.3',
+  '6.8': '6.8.13'
+};
+
 function run(command) {
   console.log(command);
   execSync(command, {stdio: 'inherit'});
@@ -10,16 +19,12 @@ function run(command) {
 
 function getVersion() {
   let version = process.env['INPUT_ELASTICSEARCH-VERSION'] || '7';
-  if (version == '7') {
-    version = '7.10.0';
-  } else if (version == '6') {
-    version = '6.8.13';
+  if (versionMap[version]) {
+    version = versionMap[version];
   }
-
   if (!/^[67]\.\d{1,2}\.\d{1,2}$/.test(version)) {
     throw `Elasticsearch version not supported: ${version}`;
   }
-
   return version;
 }
 
