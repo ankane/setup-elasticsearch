@@ -26,10 +26,7 @@ Specify a version (defaults to the latest)
         elasticsearch-version: 7
 ```
 
-Currently supports
-
-- Major versions - `7` and `6`
-- Full versions - `7.9.3`, `6.8.13`, etc
+Supports major versions (`7` and `6`) and full versions (`7.10.0`, `6.8.13`, etc)
 
 Test against multiple versions
 
