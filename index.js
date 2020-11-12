@@ -5,8 +5,16 @@ function run(command) {
   execSync(command, {stdio: 'inherit'});
 }
 
+let esHome;
+
 function installPlugins() {
-  console.log(process.env['INPUT_PLUGINS']);
+  const plugins = (process.env['INPUT_PLUGINS'] || '').split(/\s*,\s*/);
+  for (let plugin in plugins) {
+    if (!/^[a-zA-Z0-9-]+$/.test(plugin)) {
+      throw `Invalid plugin: ${plugin}`;
+    }
+    run(`${esHome}/bin/elasticsearch-plugin install ${plugin}`);
+  }
 }
 
 const elasticsearchVersion = process.env['INPUT_ELASTICSEARCH-VERSION'] || '7';
@@ -14,8 +22,6 @@ const elasticsearchVersion = process.env['INPUT_ELASTICSEARCH-VERSION'] || '7';
 if (!/^[67](\.\d{1,2}){0,2}$/.test(elasticsearchVersion)) {
   throw `Elasticsearch version not supported: ${elasticsearchVersion}`;
 }
-
-let esHome;
 
 if (process.platform == 'darwin') {
   esHome = `/usr/local/opt/elasticsearch@${elasticsearchVersion}`;
