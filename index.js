@@ -96,6 +96,9 @@ function download() {
     run('wget', '-q', '-O', 'elasticsearch.tar.gz', url);
     run('tar', 'xfz', 'elasticsearch.tar.gz');
   }
+  if (!fs.existsSync(cacheDir)) {
+    fs.mkdirSync(cacheDir, {recursive: true});
+  }
   if (isWindows()) {
     // fix for: cross-device link not permitted
     run('mv', `elasticsearch-${elasticsearchVersion}`, esHome)
@@ -156,7 +159,8 @@ function waitForReady() {
 }
 
 const elasticsearchVersion = getVersion();
-const esHome = path.join(homeDir, 'elasticsearch');
+const cacheDir = path.join(homeDir, 'elasticsearch');
+const esHome = path.join(cacheDir, elasticsearchVersion);
 
 if (!fs.existsSync(esHome)) {
   download();
