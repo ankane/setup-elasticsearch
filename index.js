@@ -13,7 +13,7 @@ function installPlugins() {
     if (!/^[a-zA-Z0-9-]+$/.test(plugin)) {
       throw `Invalid plugin: ${plugin}`;
     }
-    run(`${esHome}/bin/elasticsearch-plugin install ${plugin}`);
+    run(`sudo ${esHome}/bin/elasticsearch-plugin install ${plugin}`);
   }
 }
 
