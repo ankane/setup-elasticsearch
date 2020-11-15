@@ -52,6 +52,17 @@ Install plugins
           analysis-smartcn
 ```
 
+## Caching [experimental]
+
+Add a step to your workflow **before** the `setup-elasticsearch` one
+
+```yml
+    - uses: actions/cache@v2
+      with:
+        path: ~/elasticsearch
+        key: ${{ runner.os }}-elasticsearch-${{ matrix.elasticsearch-version }}
+```
+
 ## Related Actions
 
 - [setup-postgres](https://github.com/ankane/setup-postgres)
