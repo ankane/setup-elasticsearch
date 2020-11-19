@@ -108,9 +108,12 @@ function download() {
 }
 
 function installPlugins() {
-  const plugins = (process.env['INPUT_PLUGINS'] || '').trim().split(/\s*[,\n]\s*/);
+  let plugins = (process.env['INPUT_PLUGINS'] || '').trim();
   if (plugins.length > 0) {
     console.log('Installing plugins');
+
+    // split here instead of above since JS returns [''] for empty array
+    plugins = plugins.split(/\s*[,\n]\s*/);
 
     // validate
     plugins.forEach( function(plugin) {
