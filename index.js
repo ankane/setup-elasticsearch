@@ -1,7 +1,8 @@
 const spawnSync = require('child_process').spawnSync;
-const homeDir = require('os').homedir();
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
+const process = require('process');
 
 const versionMap = {
   '7': '7.10.0',
@@ -162,10 +163,12 @@ function waitForReady() {
 }
 
 const elasticsearchVersion = getVersion();
-const cacheDir = path.join(homeDir, 'elasticsearch');
+const cacheDir = path.join(os.homedir(), 'elasticsearch');
 const esHome = path.join(cacheDir, elasticsearchVersion);
 
 if (!fs.existsSync(esHome)) {
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'elasticsearch-'));
+  process.chdir(tmpDir);
   download();
   installPlugins();
 } else {
