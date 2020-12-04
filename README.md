@@ -69,6 +69,7 @@ Add a step to your workflow **before** the `setup-elasticsearch` one
 - [setup-mysql](https://github.com/ankane/setup-mysql)
 - [setup-mariadb](https://github.com/ankane/setup-mariadb)
 - [setup-mongodb](https://github.com/ankane/setup-mongodb)
+- [setup-sqlserver](https://github.com/ankane/setup-sqlserver)
 
 ## Contributing
 
