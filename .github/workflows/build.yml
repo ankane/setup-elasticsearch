@@ -15,7 +15,8 @@ jobs:
           - os: ubuntu-18.04
             elasticsearch-version: 7.9.3
     steps:
-    - uses: ankane/setup-elasticsearch@v1
+    - uses: actions/checkout@v2
+    - uses: ./.
       with:
         elasticsearch-version: ${{ matrix.elasticsearch-version }}
         plugins: |
