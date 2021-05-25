@@ -5,7 +5,7 @@ const path = require('path');
 const process = require('process');
 
 const versionMap = {
-  '7': '7.12.1',
+  '7': '7.13.0',
   '6': '6.8.16',
   '7.13': '7.13.0',
   '7.12': '7.12.1',
@@ -150,7 +150,11 @@ function startServer() {
     run(serviceCmd, 'install');
     run(serviceCmd, 'start');
   } else {
-    run(path.join(esHome, 'bin', 'elasticsearch'), '-d', '-E', 'discovery.type=single-node');
+    if (parseFloat(elasticsearchVersion) >= 7.13) {
+      run(path.join(esHome, 'bin', 'elasticsearch'), '-d', '-E', 'discovery.type=single-node', '-E', 'xpack.security.enabled=false');
+    } else {
+      run(path.join(esHome, 'bin', 'elasticsearch'), '-d', '-E', 'discovery.type=single-node');
+    }
   }
 }
 
