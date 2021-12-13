@@ -114,6 +114,17 @@ function download() {
   }
 }
 
+// log4j
+// Elasticsearch 6 and 7 are not susceptible to RCE due to Java Security Manager
+// set flag to prevent information leak via DNS
+// https://discuss.elastic.co/t/apache-log4j2-remote-code-execution-rce-vulnerability-cve-2021-44228-esa-2021-31/291476
+function fixLog4j() {
+  const jvmOptionsPath = path.join(esHome, 'config', 'jvm.options');
+  if (!fs.readFileSync(jvmOptionsPath).includes('log4j2.formatMsgNoLookups')) {
+    fs.appendFileSync(jvmOptionsPath, '\n-Dlog4j2.formatMsgNoLookups=true\n');
+  }
+}
+
 function installPlugins() {
   let plugins = (process.env['INPUT_PLUGINS'] || '').trim();
   if (plugins.length > 0) {
@@ -180,9 +191,11 @@ if (!fs.existsSync(esHome)) {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'elasticsearch-'));
   process.chdir(tmpDir);
   download();
+  fixLog4j();
   installPlugins();
 } else {
   console.log('Elasticsearch cached');
+  fixLog4j();
 }
 
 startServer();
