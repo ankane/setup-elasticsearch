@@ -122,6 +122,15 @@ function fixLog4j() {
   const jvmOptionsPath = path.join(esHome, 'config', 'jvm.options');
   if (!fs.readFileSync(jvmOptionsPath).includes('log4j2.formatMsgNoLookups')) {
     fs.appendFileSync(jvmOptionsPath, '\n-Dlog4j2.formatMsgNoLookups=true\n');
+
+    // needed for Elasticsearch < 6.5
+    // but remove for all versions
+    if (!isWindows()) {
+      const coreJarPath = fs.readdirSync(path.join(esHome, 'lib')).filter(fn => fn.includes('log4j-core-'))[0];
+      run('zip', '-q', '-d', path.join(esHome, 'lib', coreJarPath), 'org/apache/logging/log4j/core/lookup/JndiLookup.class');
+    } else if (elasticsearchVersion < '6.5') {
+      throw 'Elasticsearch version not available';
+    }
   }
 }
 
