@@ -62,7 +62,7 @@ function getVersion() {
   if (versionMap[version]) {
     version = versionMap[version];
   }
-  if (!/^[67]\.\d{1,2}\.\d{1,2}$/.test(version)) {
+  if (!/^[678]\.\d{1,2}\.\d{1,2}$/.test(version)) {
     throw `Elasticsearch version not supported: ${version}`;
   }
   return version;
