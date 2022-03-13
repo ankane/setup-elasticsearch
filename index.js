@@ -59,7 +59,7 @@ function addToPath(value) {
 }
 
 function getVersion() {
-  let version = process.env['INPUT_ELASTICSEARCH-VERSION'] || '7';
+  let version = process.env['INPUT_ELASTICSEARCH-VERSION'] || '8';
   if (versionMap[version]) {
     version = versionMap[version];
   }
