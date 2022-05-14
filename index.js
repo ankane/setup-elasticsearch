@@ -7,7 +7,6 @@ const process = require('process');
 const versionMap = {
   '8': '8.2.0',
   '7': '7.17.3',
-  '6': '6.8.23',
   '8.2': '8.2.0',
   '8.1': '8.1.3',
   '8.0': '8.0.1',
@@ -28,16 +27,7 @@ const versionMap = {
   '7.3': '7.3.2',
   '7.2': '7.2.1',
   '7.1': '7.1.1',
-  '7.0': '7.0.1',
-  '6.8': '6.8.23',
-  '6.7': '6.7.2',
-  '6.6': '6.6.2',
-  '6.5': '6.5.4',
-  '6.4': '6.4.3',
-  '6.3': '6.3.2',
-  '6.2': '6.2.4',
-  '6.1': '6.1.4',
-  '6.0': '6.0.1'
+  '7.0': '7.0.1'
 };
 
 function run() {
@@ -64,7 +54,7 @@ function getVersion() {
   if (versionMap[version]) {
     version = versionMap[version];
   }
-  if (!/^[678]\.\d{1,2}\.\d{1,2}$/.test(version)) {
+  if (!/^[78]\.\d{1,2}\.\d{1,2}$/.test(version)) {
     throw `Elasticsearch version not supported: ${version}`;
   }
   return version;
@@ -78,23 +68,11 @@ function isWindows() {
 function getUrl() {
   let url;
   if (process.platform == 'darwin') {
-    if (elasticsearchVersion[0] == '6') {
-      url = `https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${elasticsearchVersion}.tar.gz`;
-    } else {
-      url = `https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${elasticsearchVersion}-darwin-x86_64.tar.gz`;
-    }
+    url = `https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${elasticsearchVersion}-darwin-x86_64.tar.gz`;
   } else if (isWindows()) {
-    if (elasticsearchVersion[0] == '6') {
-      url = `https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${elasticsearchVersion}.zip`;
-    } else {
-      url = `https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${elasticsearchVersion}-windows-x86_64.zip`;
-    }
+    url = `https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${elasticsearchVersion}-windows-x86_64.zip`;
   } else {
-    if (elasticsearchVersion[0] == '6') {
-      url = `https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${elasticsearchVersion}.tar.gz`;
-    } else {
-      url = `https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${elasticsearchVersion}-linux-x86_64.tar.gz`;
-    }
+    url = `https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${elasticsearchVersion}.tar.gz`;
   }
   return url;
 }

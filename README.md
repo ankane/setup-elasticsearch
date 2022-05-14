@@ -26,14 +26,14 @@ Specify a version (defaults to the latest)
         elasticsearch-version: 8
 ```
 
-Supports major versions (`8`, `7`, `6`), minor versions (`8.0`, `7.17`, `6.8`, etc), and full versions (`8.0.0`, `7.17.0`, `6.8.23`, etc)
+Supports major versions (`8`, `7`), minor versions (`8.2`, `7.17`, etc), and full versions (`8.2.0`, `7.17.3`, etc)
 
 Test against multiple versions
 
 ```yml
     strategy:
       matrix:
-        elasticsearch-version: [8, 7, 6]
+        elasticsearch-version: [8, 7]
     steps:
     - uses: ankane/setup-elasticsearch@v1
       with:
