@@ -5,5 +5,5 @@ inputs:
   plugins:
     description: Elasticsearch plugins to install
 runs:
-  using: node12
+  using: node16
   main: index.js
