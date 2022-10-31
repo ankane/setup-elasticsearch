@@ -21,3 +21,4 @@ jobs:
     - run: curl -s localhost:9200
     - run: curl -s localhost:9200 | grep my-cluster
     - run: which elasticsearch
+    - run: elasticsearch-plugin list
