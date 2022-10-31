@@ -155,11 +155,17 @@ function installPlugins() {
 }
 
 function setConfig(dir) {
-  const config = process.env['INPUT_CONFIG'];
-  if (config) {
-    const file = path.join(dir, 'config', 'elasticsearch.yml');
-    fs.appendFileSync(file, config);
+  let config = process.env['INPUT_CONFIG'] || '';
+  config += '\n';
+  config += 'discovery.type: single-node\n';
+
+  const [majorVersion, minorVersion, patchVersion] = elasticsearchVersion.split('.');
+  if (parseInt(majorVersion) >= 8 || parseInt(minorVersion) >= 13) {
+    config += 'xpack.security.enabled: false\n';
   }
+
+  const file = path.join(dir, 'config', 'elasticsearch.yml');
+  fs.appendFileSync(file, config);
 }
 
 function startServer() {
@@ -168,11 +174,7 @@ function startServer() {
     run(serviceCmd, 'install');
     run(serviceCmd, 'start');
   } else {
-    if (parseFloat(elasticsearchVersion) >= 7.13) {
-      run(path.join(esHome, 'bin', 'elasticsearch'), '-d', '-E', 'discovery.type=single-node', '-E', 'xpack.security.enabled=false');
-    } else {
-      run(path.join(esHome, 'bin', 'elasticsearch'), '-d', '-E', 'discovery.type=single-node');
-    }
+    run(path.join(esHome, 'bin', 'elasticsearch'), '-d');
   }
 }
 
