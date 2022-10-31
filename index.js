@@ -199,13 +199,12 @@ if (!fs.existsSync(esHome)) {
   download();
   fixLog4j();
   installPlugins();
-  setConfig(esHome);
 } else {
   console.log('Elasticsearch cached');
   fixLog4j();
-  setConfig(esHome);
 }
 
+setConfig(esHome);
 startServer();
 
 waitForReady();
