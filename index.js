@@ -154,6 +154,14 @@ function installPlugins() {
   }
 }
 
+function setConfig(dir) {
+  const config = process.env['INPUT_CONFIG'];
+  if (config) {
+    const file = path.join(dir, 'config', 'elasticsearch.yml');
+    fs.appendFileSync(file, config);
+  }
+}
+
 function startServer() {
   if (isWindows()) {
     const serviceCmd = path.join(esHome, 'bin', 'elasticsearch-service.bat');
@@ -189,6 +197,7 @@ if (!fs.existsSync(esHome)) {
   download();
   fixLog4j();
   installPlugins();
+  setConfig(esHome);
 } else {
   console.log('Elasticsearch cached');
   fixLog4j();

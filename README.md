@@ -52,6 +52,17 @@ Install plugins
           analysis-smartcn
 ```
 
+## Options
+
+Set `elasticsearch.yml` config
+
+```yml
+    - uses: ankane/setup-elasticsearch@v1
+      with:
+        config: |
+          cluster.name: my-cluster
+```
+
 ## Caching [experimental]
 
 Add a step to your workflow **before** the `setup-elasticsearch` one
