@@ -203,6 +203,7 @@ if (!fs.existsSync(esHome)) {
 } else {
   console.log('Elasticsearch cached');
   fixLog4j();
+  setConfig(esHome);
 }
 
 startServer();
