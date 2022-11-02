@@ -58,7 +58,7 @@ Set `elasticsearch.yml` config
     - uses: ankane/setup-elasticsearch@v1
       with:
         config: |
-          cluster.name: my-cluster
+          http.port: 9200
 ```
 
 ## Caching [experimental]
