@@ -166,7 +166,9 @@ function setConfig(dir) {
   }
 
   const file = path.join(dir, 'config', 'elasticsearch.yml');
-  fs.appendFileSync(file, config);
+  // overwrite instead of append to play nicely with caching
+  // alternatively, could append to copy of original file
+  fs.writeFileSync(file, config);
 }
 
 function startServer() {
