@@ -9,17 +9,17 @@ jobs:
         os: [ubuntu-22.04, ubuntu-20.04, ubuntu-18.04, macos-12, macos-11, macos-10.15, windows-2022, windows-2019]
         elasticsearch-version: [8, 7]
     steps:
-    - uses: actions/checkout@v3
-    - uses: ./.
-      with:
-        elasticsearch-version: ${{ matrix.elasticsearch-version }}
-        plugins: |
-          analysis-kuromoji
-          analysis-smartcn
-        config: |
-          cluster.name: my-cluster
-          http.port: 9201
-    - run: curl -s localhost:9201
-    - run: curl -s localhost:9201 | grep my-cluster
-    - run: which elasticsearch
-    - run: elasticsearch-plugin list
+      - uses: actions/checkout@v3
+      - uses: ./.
+        with:
+          elasticsearch-version: ${{ matrix.elasticsearch-version }}
+          plugins: |
+            analysis-kuromoji
+            analysis-smartcn
+          config: |
+            cluster.name: my-cluster
+            http.port: 9201
+      - run: curl -s localhost:9201
+      - run: curl -s localhost:9201 | grep my-cluster
+      - run: which elasticsearch
+      - run: elasticsearch-plugin list

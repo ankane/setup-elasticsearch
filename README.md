@@ -13,7 +13,7 @@ The missing action for Elasticsearch :tada:
 Add it as a step to your workflow
 
 ```yml
-    - uses: ankane/setup-elasticsearch@v1
+      - uses: ankane/setup-elasticsearch@v1
 ```
 
 ## Versions
@@ -21,9 +21,9 @@ Add it as a step to your workflow
 Specify a version (defaults to the latest)
 
 ```yml
-    - uses: ankane/setup-elasticsearch@v1
-      with:
-        elasticsearch-version: 8
+      - uses: ankane/setup-elasticsearch@v1
+        with:
+          elasticsearch-version: 8
 ```
 
 Supports major versions (`8`, `7`), minor versions (`8.5`, `7.17`, etc), and full versions (`8.5.0`, `7.17.7`, etc)
@@ -35,9 +35,9 @@ Test against multiple versions
       matrix:
         elasticsearch-version: [8, 7]
     steps:
-    - uses: ankane/setup-elasticsearch@v1
-      with:
-        elasticsearch-version: ${{ matrix.elasticsearch-version }}
+      - uses: ankane/setup-elasticsearch@v1
+        with:
+          elasticsearch-version: ${{ matrix.elasticsearch-version }}
 ```
 
 ## Options
@@ -45,20 +45,20 @@ Test against multiple versions
 Install plugins
 
 ```yml
-    - uses: ankane/setup-elasticsearch@v1
-      with:
-        plugins: |
-          analysis-kuromoji
-          analysis-smartcn
+      - uses: ankane/setup-elasticsearch@v1
+        with:
+          plugins: |
+            analysis-kuromoji
+            analysis-smartcn
 ```
 
 Set `elasticsearch.yml` config
 
 ```yml
-    - uses: ankane/setup-elasticsearch@v1
-      with:
-        config: |
-          http.port: 9200
+      - uses: ankane/setup-elasticsearch@v1
+        with:
+          config: |
+            http.port: 9200
 ```
 
 ## Caching [experimental]
@@ -66,10 +66,10 @@ Set `elasticsearch.yml` config
 Add a step to your workflow **before** the `setup-elasticsearch` one
 
 ```yml
-    - uses: actions/cache@v3
-      with:
-        path: ~/elasticsearch
-        key: ${{ runner.os }}-elasticsearch-${{ matrix.elasticsearch-version }}
+      - uses: actions/cache@v3
+        with:
+          path: ~/elasticsearch
+          key: ${{ runner.os }}-elasticsearch-${{ matrix.elasticsearch-version }}
 ```
 
 ## Related Actions
