@@ -133,7 +133,7 @@ function installPlugins() {
 
     // validate
     plugins.forEach( function(plugin) {
-      if (!/^[a-zA-Z0-9-]+$/.test(plugin)) {
+      if (!/^\w\S+$/.test(plugin)) {
         throw `Invalid plugin: ${plugin}`;
       }
     });
@@ -147,10 +147,10 @@ function installPlugins() {
       pluginCmd += '.bat';
     }
     if (atOnce) {
-      run(pluginCmd, 'install', '--silent', ...plugins);
+      run(pluginCmd, 'install', '--silent', '--batch', ...plugins);
     } else {
       plugins.forEach( function(plugin) {
-        run(pluginCmd, 'install', '--silent', plugin);
+        run(pluginCmd, 'install', '--silent', '--batch', plugin);
       });
     }
   }
