@@ -9,7 +9,7 @@ jobs:
         os: [ubuntu-22.04, ubuntu-20.04, macos-12, macos-11, windows-2022, windows-2019]
         elasticsearch-version: [8, 7]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.
         with:
           elasticsearch-version: ${{ matrix.elasticsearch-version }}
