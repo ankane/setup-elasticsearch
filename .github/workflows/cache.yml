@@ -1,0 +1,17 @@
+name: cache
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        elasticsearch-version: [7]
+    steps:
+      - uses: actions/cache@v3
+        with:
+          path: ~/elasticsearch
+          key: ${{ runner.os }}-elasticsearch-${{ matrix.elasticsearch-version }}
+      - uses: ankane/setup-elasticsearch@v1
+        with:
+          elasticsearch-version: ${{ matrix.elasticsearch-version }}
+      - run: curl -s localhost:9200
