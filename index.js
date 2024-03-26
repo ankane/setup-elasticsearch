@@ -5,8 +5,9 @@ const path = require('path');
 const process = require('process');
 
 const versionMap = {
-  '8': '8.12.2',
+  '8': '8.13.0',
   '7': '7.17.18',
+  '8.13': '8.13.0',
   '8.12': '8.12.2',
   '8.11': '8.11.4',
   '8.10': '8.10.4',
