@@ -6,7 +6,7 @@ The missing action for Elasticsearch :tada:
 - Works on Linux, Mac, and Windows
 - Supports different versions
 
-[![Build Status](https://github.com/ankane/setup-elasticsearch/workflows/build/badge.svg?branch=v1)](https://github.com/ankane/setup-elasticsearch/actions)
+[![Build Status](https://github.com/ankane/setup-elasticsearch/actions/workflows/build.yml/badge.svg)](https://github.com/ankane/setup-elasticsearch/actions)
 
 ## Getting Started
 
