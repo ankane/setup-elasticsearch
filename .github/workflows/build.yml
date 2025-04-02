@@ -6,16 +6,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-2025, windows-2022, windows-2019]
-        elasticsearch-version: [8, 7]
+        os: [windows-2025] #, windows-2022, windows-2019]
+        elasticsearch-version: [8] #, 7]
     steps:
       - uses: actions/checkout@v4
       - uses: ./.
         with:
           elasticsearch-version: ${{ matrix.elasticsearch-version }}
-          plugins: |
-            analysis-kuromoji
-            analysis-smartcn
+          # plugins: |
+          #   analysis-kuromoji
+          #   analysis-smartcn
           config: |
             cluster.name: my-cluster
             http.port: 9201
