@@ -224,16 +224,10 @@ const esHome = path.join(cacheDir, elasticsearchVersion);
 // https://www.elastic.co/support/matrix
 const javaHome = elasticsearchVersion.split('.')[0] == '7' ? process.env.JAVA_HOME_11_X64 : process.env.JAVA_HOME_17_X64;
 
-run('find', javaHome);
-
 // not set on ubuntu-22.04, but defaults to Java 17
 if (javaHome) {
-  process.env.ES_JAVA_HOME = javaHome;
-  addToEnv(`ES_JAVA_HOME=${javaHome}`);
-
-  if (isWindows()) {
-    process.env.JAVA_HOME = javaHome;
-  }
+  process.env.JAVA_HOME = javaHome;
+  addToEnv(`JAVA_HOME=${javaHome}`);
 }
 
 if (!fs.existsSync(esHome)) {
