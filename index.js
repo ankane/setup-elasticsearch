@@ -102,7 +102,7 @@ function download() {
   const url = getUrl();
   if (isWindows()) {
     run('curl', '-s', '-o', 'elasticsearch.zip', url);
-    run('unzip', '-q', 'elasticsearch.zip');
+    run('unzip', 'elasticsearch.zip');
   } else {
     run('wget', '-q', '-O', 'elasticsearch.tar.gz', url);
     run('tar', 'xfz', 'elasticsearch.tar.gz');
