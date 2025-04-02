@@ -224,7 +224,7 @@ const esHome = path.join(cacheDir, elasticsearchVersion);
 // https://www.elastic.co/support/matrix
 const majorVersion = parseInt(elasticsearchVersion.split('.')[0]);
 const javaHome = majorVersion == 7 ? process.env.JAVA_HOME_11_X64 : process.env.JAVA_HOME_17_X64;
-if (javaHome) {
+if (javaHome && !isWindows()) {
   if (majorVersion == 7) {
     process.env.JAVA_HOME = javaHome;
     addToEnv(`JAVA_HOME=${javaHome}`);
