@@ -102,7 +102,7 @@ function download() {
   const url = getUrl();
   if (isWindows()) {
     run('curl', '-s', '-o', 'elasticsearch.zip', url);
-    run('unzip', 'elasticsearch.zip');
+    run('7z', 'x', 'elasticsearch.zip');
   } else {
     run('wget', '-q', '-O', 'elasticsearch.tar.gz', url);
     run('tar', 'xfz', 'elasticsearch.tar.gz');
@@ -245,7 +245,6 @@ if (!fs.existsSync(esHome)) {
   fixLog4j();
 }
 
-run('dir', '-R', esHome);
 setConfig(esHome);
 startServer();
 
