@@ -220,6 +220,20 @@ const elasticsearchVersion = getVersion();
 const cacheDir = path.join(os.homedir(), 'elasticsearch');
 const esHome = path.join(cacheDir, elasticsearchVersion);
 
+// java compatibility
+// https://www.elastic.co/support/matrix
+const majorVersion = parseInt(elasticsearchVersion.split('.')[0]);
+const javaHome = majorVersion == 7 ? process.env.JAVA_HOME_11_X64 : process.env.JAVA_HOME_17_X64;
+if (javaHome) {
+  if (majorVersion == 7) {
+    process.env.JAVA_HOME = javaHome;
+    addToEnv(`JAVA_HOME=${javaHome}`);
+  } else {
+    process.env.ES_JAVA_HOME = javaHome;
+    addToEnv(`ES_JAVA_HOME=${javaHome}`);
+  }
+}
+
 if (!fs.existsSync(esHome)) {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'elasticsearch-'));
   process.chdir(tmpDir);
