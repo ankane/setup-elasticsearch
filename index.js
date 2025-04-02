@@ -5,8 +5,10 @@ const path = require('path');
 const process = require('process');
 
 const versionMap = {
-  '8': '8.15.2',
+  '8': '8.17.4',
   '7': '7.17.24',
+  '8.17': '8.17.4',
+  '8.16': '8.16.6',
   '8.15': '8.15.2',
   '8.14': '8.14.3',
   '8.13': '8.13.4',
@@ -238,7 +240,7 @@ if (!fs.existsSync(esHome)) {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'elasticsearch-'));
   process.chdir(tmpDir);
   download();
-  fixLog4j();
+  // fixLog4j();
   installPlugins();
 } else {
   console.log('Elasticsearch cached');
