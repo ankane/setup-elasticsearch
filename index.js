@@ -245,6 +245,7 @@ if (!fs.existsSync(esHome)) {
   fixLog4j();
 }
 
+run('dir', '-R', esHome);
 setConfig(esHome);
 startServer();
 
