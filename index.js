@@ -5,8 +5,11 @@ const path = require('path');
 const process = require('process');
 
 const versionMap = {
-  '8': '8.17.4',
+  '9': '9.0.0',
+  '8': '8.18.0',
   '7': '7.17.28',
+  '9.0': '9.0.0',
+  '8.18': '8.18.0',
   '8.17': '8.17.4',
   '8.16': '8.16.6',
   '8.15': '8.15.5',
@@ -65,11 +68,11 @@ function addToPath(value) {
 }
 
 function getVersion() {
-  let version = process.env['INPUT_ELASTICSEARCH-VERSION'] || '8';
+  let version = process.env['INPUT_ELASTICSEARCH-VERSION'] || '9';
   if (versionMap[version]) {
     version = versionMap[version];
   }
-  if (!/^[78]\.\d{1,2}\.\d{1,2}$/.test(version)) {
+  if (!/^[789]\.\d{1,2}\.\d{1,2}$/.test(version)) {
     throw `Elasticsearch version not supported: ${version}`;
   }
   return version;
@@ -225,7 +228,7 @@ const esHome = path.join(cacheDir, elasticsearchVersion);
 // java compatibility
 // https://www.elastic.co/support/matrix
 const majorVersion = parseInt(elasticsearchVersion.split('.')[0]);
-const javaHome = majorVersion == 7 ? process.env.JAVA_HOME_11_X64 : process.env.JAVA_HOME_17_X64;
+const javaHome = majorVersion == 7 ? process.env.JAVA_HOME_11_X64 : (majorVersion == 8 ? process.env.JAVA_HOME_17_X64 : process.env.JAVA_HOME_21_X64);
 if (javaHome) {
   if (majorVersion == 7) {
     process.env.JAVA_HOME = javaHome;
