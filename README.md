@@ -23,7 +23,7 @@ Specify a version (defaults to the latest)
 ```yml
       - uses: ankane/setup-elasticsearch@v1
         with:
-          elasticsearch-version: 8
+          elasticsearch-version: 9
 ```
 
 Supports major versions (`9`, `8`), minor versions (`9.0`, `8.18`, etc), and full versions (`9.0.0`, `8.18.0`, etc)
