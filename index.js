@@ -170,7 +170,7 @@ function installPlugins() {
 
     // validate
     plugins.forEach( function(plugin) {
-      if (!/^\w(\w|-)+$/i.test(plugin)) {
+      if (!/^\w(\w|-)+$/.test(plugin)) {
         throw `Invalid plugin: ${plugin}`;
       }
     });
