@@ -59,6 +59,21 @@ function run() {
   }
 }
 
+// only use with validated input
+// https://github.com/nodejs/node/issues/52554
+function runBat() {
+  const args = Array.from(arguments);
+  console.log(args.join(' '));
+  const command = args.shift();
+  if (!fs.existsSync(command)) {
+    throw 'Bat not found';
+  }
+  const ret = spawnSync(command, args, {stdio: 'inherit', shell: true});
+  if (ret.status !== 0) {
+    throw ret.error;
+  }
+}
+
 function addToEnv(value) {
   fs.appendFileSync(process.env.GITHUB_ENV, `${value}\n`);
 }
@@ -155,7 +170,7 @@ function installPlugins() {
 
     // validate
     plugins.forEach( function(plugin) {
-      if (!/^\w\S+$/.test(plugin)) {
+      if (!/^\w(\w|-)+$/i.test(plugin)) {
         throw `Invalid plugin: ${plugin}`;
       }
     });
@@ -165,14 +180,16 @@ function installPlugins() {
     const versionParts = elasticsearchVersion.split('.');
     const atOnce = parseInt(versionParts[0]) >= 7 && parseInt(versionParts[1]) >= 6;
     let pluginCmd = path.join(esHome, 'bin', 'elasticsearch-plugin');
+    let runCmd = run;
     if (isWindows()) {
       pluginCmd += '.bat';
+      runCmd = runBat;
     }
     if (atOnce) {
-      run(pluginCmd, 'install', '--silent', '--batch', ...plugins);
+      runCmd(pluginCmd, 'install', '--silent', '--batch', ...plugins);
     } else {
       plugins.forEach( function(plugin) {
-        run(pluginCmd, 'install', '--silent', '--batch', plugin);
+        runCmd(pluginCmd, 'install', '--silent', '--batch', plugin);
       });
     }
   }
@@ -197,8 +214,8 @@ function setConfig(dir) {
 function startServer() {
   if (isWindows()) {
     const serviceCmd = path.join(esHome, 'bin', 'elasticsearch-service.bat');
-    run(serviceCmd, 'install');
-    run(serviceCmd, 'start');
+    runBat(serviceCmd, 'install');
+    runBat(serviceCmd, 'start');
   } else {
     run(path.join(esHome, 'bin', 'elasticsearch'), '-d');
   }
