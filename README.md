@@ -66,7 +66,7 @@ Set `elasticsearch.yml` config
 Add a step to your workflow **before** the `setup-elasticsearch` one
 
 ```yml
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/elasticsearch
           key: ${{ runner.os }}-elasticsearch-${{ matrix.elasticsearch-version }}
