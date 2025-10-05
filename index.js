@@ -32,12 +32,15 @@ const versionMap = {
   '8.0': '8.0.1'
 };
 
+const env = Object.assign({}, process.env);
+delete env.JAVA_HOME;
+
 function run() {
   const args = Array.from(arguments);
   console.log(args.join(' '));
   const command = args.shift();
   // spawn is safer and more lightweight than exec
-  const ret = spawnSync(command, args, {stdio: 'inherit'});
+  const ret = spawnSync(command, args, {stdio: 'inherit', env: env});
   if (ret.status !== 0) {
     throw ret.error;
   }
@@ -52,7 +55,7 @@ function runBat() {
   if (!fs.existsSync(command)) {
     throw 'Bat not found';
   }
-  const ret = spawnSync(command, args, {stdio: 'inherit', shell: true});
+  const ret = spawnSync(command, args, {stdio: 'inherit', env: env, shell: true});
   if (ret.status !== 0) {
     throw ret.error;
   }
@@ -197,15 +200,6 @@ function waitForReady() {
 const elasticsearchVersion = getVersion();
 const cacheDir = path.join(os.homedir(), 'elasticsearch');
 const esHome = path.join(cacheDir, elasticsearchVersion);
-
-// java compatibility
-// https://www.elastic.co/support/matrix
-const majorVersion = parseInt(elasticsearchVersion.split('.')[0]);
-const javaHome = majorVersion == 8 ? process.env.JAVA_HOME_17_X64 : process.env.JAVA_HOME_21_X64;
-if (javaHome) {
-  process.env.ES_JAVA_HOME = javaHome;
-  addToEnv(`ES_JAVA_HOME=${javaHome}`);
-}
 
 if (!fs.existsSync(esHome)) {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'elasticsearch-'));
