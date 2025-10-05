@@ -29,25 +29,7 @@ const versionMap = {
   '8.3': '8.3.3',
   '8.2': '8.2.3',
   '8.1': '8.1.3',
-  '8.0': '8.0.1',
-  '7.17': '7.17.28',
-  '7.16': '7.16.3',
-  '7.15': '7.15.2',
-  '7.14': '7.14.2',
-  '7.13': '7.13.4',
-  '7.12': '7.12.1',
-  '7.11': '7.11.1',
-  '7.10': '7.10.2',
-  '7.9': '7.9.3',
-  '7.8': '7.8.1',
-  '7.7': '7.7.1',
-  '7.6': '7.6.2',
-  '7.5': '7.5.2',
-  '7.4': '7.4.2',
-  '7.3': '7.3.2',
-  '7.2': '7.2.1',
-  '7.1': '7.1.1',
-  '7.0': '7.0.1'
+  '8.0': '8.0.1'
 };
 
 function run() {
@@ -89,7 +71,7 @@ function getVersion() {
   if (versionMap[version]) {
     version = versionMap[version];
   }
-  if (!/^[789]\.\d{1,2}\.\d{1,2}$/.test(version)) {
+  if (!/^[89]\.\d{1,2}\.\d{1,2}$/.test(version)) {
     throw `Elasticsearch version not supported: ${version}`;
   }
   return version;
@@ -140,28 +122,6 @@ function download() {
   }
 }
 
-// log4j
-// Elasticsearch 6 and 7 are not susceptible to RCE due to Java Security Manager
-// set flag to prevent information leak via DNS
-// https://discuss.elastic.co/t/apache-log4j2-remote-code-execution-rce-vulnerability-cve-2021-44228-esa-2021-31/291476
-function fixLog4j() {
-  const jvmOptionsPath = path.join(esHome, 'config', 'jvm.options');
-  if (!fs.readFileSync(jvmOptionsPath).includes('log4j2.formatMsgNoLookups')) {
-    fs.appendFileSync(jvmOptionsPath, '\n-Dlog4j2.formatMsgNoLookups=true\n');
-
-    // needed for Elasticsearch < 6.5
-    // but remove for all versions
-    if (!isWindows()) {
-      const coreJarPath = fs.readdirSync(path.join(esHome, 'lib')).filter(fn => fn.includes('log4j-core-'))[0];
-      if (coreJarPath) {
-        run('zip', '-q', '-d', path.join(esHome, 'lib', coreJarPath), 'org/apache/logging/log4j/core/lookup/JndiLookup.class');
-      }
-    } else if (elasticsearchVersion < '6.5') {
-      throw 'Elasticsearch version not available';
-    }
-  }
-}
-
 function installPlugins() {
   let plugins = (process.env['INPUT_PLUGINS'] || '').trim();
   if (plugins.length > 0) {
@@ -178,23 +138,16 @@ function installPlugins() {
       }
     });
 
-    // install multiple plugins at once with Elasticsearch 7.6+
+    // install multiple plugins at once
     // https://www.elastic.co/guide/en/elasticsearch/plugins/7.6/installing-multiple-plugins.html
     const versionParts = elasticsearchVersion.split('.');
-    const atOnce = parseInt(versionParts[0]) >= 7 && parseInt(versionParts[1]) >= 6;
     let pluginCmd = path.join(esHome, 'bin', 'elasticsearch-plugin');
     let runCmd = run;
     if (isWindows()) {
       pluginCmd += '.bat';
       runCmd = runBat;
     }
-    if (atOnce) {
-      runCmd(pluginCmd, 'install', '--silent', '--batch', ...plugins);
-    } else {
-      plugins.forEach( function(plugin) {
-        runCmd(pluginCmd, 'install', '--silent', '--batch', plugin);
-      });
-    }
+    runCmd(pluginCmd, 'install', '--silent', '--batch', ...plugins);
   }
 }
 
@@ -248,26 +201,19 @@ const esHome = path.join(cacheDir, elasticsearchVersion);
 // java compatibility
 // https://www.elastic.co/support/matrix
 const majorVersion = parseInt(elasticsearchVersion.split('.')[0]);
-const javaHome = majorVersion == 7 ? process.env.JAVA_HOME_11_X64 : (majorVersion == 8 ? process.env.JAVA_HOME_17_X64 : process.env.JAVA_HOME_21_X64);
+const javaHome = majorVersion == 8 ? process.env.JAVA_HOME_17_X64 : process.env.JAVA_HOME_21_X64;
 if (javaHome) {
-  if (majorVersion == 7) {
-    process.env.JAVA_HOME = javaHome;
-    addToEnv(`JAVA_HOME=${javaHome}`);
-  } else {
-    process.env.ES_JAVA_HOME = javaHome;
-    addToEnv(`ES_JAVA_HOME=${javaHome}`);
-  }
+  process.env.ES_JAVA_HOME = javaHome;
+  addToEnv(`ES_JAVA_HOME=${javaHome}`);
 }
 
 if (!fs.existsSync(esHome)) {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'elasticsearch-'));
   process.chdir(tmpDir);
   download();
-  fixLog4j();
   installPlugins();
 } else {
   console.log('Elasticsearch cached');
-  fixLog4j();
 }
 
 setConfig(esHome);
