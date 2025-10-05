@@ -141,9 +141,6 @@ function installPlugins() {
       }
     });
 
-    // install multiple plugins at once
-    // https://www.elastic.co/guide/en/elasticsearch/plugins/7.6/installing-multiple-plugins.html
-    const versionParts = elasticsearchVersion.split('.');
     let pluginCmd = path.join(esHome, 'bin', 'elasticsearch-plugin');
     let runCmd = run;
     if (isWindows()) {
